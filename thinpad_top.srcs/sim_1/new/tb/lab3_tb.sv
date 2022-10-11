@@ -3,23 +3,23 @@ module lab3_tb;
 
   wire clk_50M, clk_11M0592;
 
-  reg push_btn;   // BTN5 按钮开关，带消抖电路，按下时为 1
-  reg reset_btn;  // BTN6 复位按钮，带消抖电路，按下时为 1
+  reg push_btn;  // BTN5 按钮�?关，带消抖电路，按下时为 1
+  reg reset_btn;  // BTN6 复位按钮，带消抖电路，按下时�? 1
 
-  reg [3:0] touch_btn; // BTN1~BTN4，按钮开关，按下时为 1
-  reg [31:0] dip_sw;   // 32 位拨码开关，拨到“ON”时为 1
+  reg [3:0] touch_btn;  // BTN1~BTN4，按钮开关，按下时为 1
+  reg [31:0] dip_sw;  // 32 位拨码开关，拨到“ON”时�? 1
 
-  wire [15:0] leds;  // 16 位 LED，输出时 1 点亮
-  wire [7:0] dpy0;   // 数码管低位信号，包括小数点，输出 1 点亮
-  wire [7:0] dpy1;   // 数码管高位信号，包括小数点，输出 1 点亮
+  wire [15:0] leds;  // 16 �? LED，输出时 1 点亮
+  wire [7:0] dpy0;  // 数码管低位信号，包括小数点，输出 1 点亮
+  wire [7:0] dpy1;  // 数码管高位信号，包括小数点，输出 1 点亮
 
-  // 实验 3 用到的指令格式
+  // 实验 3 用到的指令格�?
   `define inst_rtype(rd, rs1, rs2, op) \
     {7'b0, rs2, rs1, 3'b0, rd, op, 3'b001}
 
   `define inst_itype(rd, imm, op) \
     {imm, 4'b0, rd, op, 3'b010}
-  
+
   `define inst_poke(rd, imm) `inst_itype(rd, imm, 4'b0001)
   `define inst_peek(rd, imm) `inst_itype(rd, imm, 4'b0010)
 
@@ -53,13 +53,22 @@ module lab3_tb;
     reset_btn = 1;
     #100;
     reset_btn = 0;
-    #1000;  // 等待复位结束
+    #3000;  // 等待复位结束
 
-    // 样例：使用 POKE 指令为寄存器赋随机初值
+    // 样例：使�? POKE 指令为寄存器赋初�?
     for (int i = 1; i < 32; i = i + 1) begin
       #100;
-      rd = i;   // only lower 5 bits
-      dip_sw = `inst_poke(rd, $urandom_range(0, 65536));
+      rd = i;  // only lower 5 bits
+      imm = i;
+      dip_sw = `inst_poke(rd, imm);
+      push_btn = 1;
+
+      #100;
+      push_btn = 0;
+
+      #1000;
+      imm = 0;
+      dip_sw = `inst_peek(rd, 16'b0);
       push_btn = 1;
 
       #100;
@@ -69,11 +78,35 @@ module lab3_tb;
     end
 
     // TODO: 随机测试各种指令
+    for (int i = 1; i <= 10; i = i + 1) begin
+      #100;
+      rd = i;  // only lower 5 bits   
+
+      rs1 = 11;
+      rs2 = 12;
+      opcode = i;
+      dip_sw = `inst_rtype(rd, rs1, rs2, opcode);
+      push_btn = 1;
+
+      #100;
+      push_btn = 0;
+
+      #1000;
+      rd = i;
+      imm = 0;
+      dip_sw = `inst_peek(rd, 16'b0);
+      push_btn = 1;
+
+      #100;
+      push_btn = 0;
+
+      #100;
+    end
 
     #10000 $finish;
   end
 
-  // 待测试用户设计
+  // 待测试用户设�?
   lab3_top dut (
       .clk_50M(clk_50M),
       .clk_11M0592(clk_11M0592),
@@ -114,7 +147,7 @@ module lab3_tb;
       .flash_we_n()
   );
 
-  // 时钟源
+  // 时钟�?
   clock osc (
       .clk_11M0592(clk_11M0592),
       .clk_50M    (clk_50M)

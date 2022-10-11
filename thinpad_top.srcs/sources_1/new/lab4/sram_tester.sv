@@ -31,7 +31,7 @@ module sram_tester #(
     output reg [DATA_WIDTH-1:0] error_expected_data
 );
 
-  localparam RAM_ADDR_WIDTH = $clog2(ADDR_MASK); // ceil to correct bits
+  localparam RAM_ADDR_WIDTH = $clog2(ADDR_MASK);  // ceil to correct bits
   localparam ADDR_ZEROS = ADDR_WIDTH - RAM_ADDR_WIDTH;
 
   typedef enum logic [3:0] {
@@ -197,14 +197,14 @@ module sram_tester #(
   genvar i;
   for (i = 0; i < DATA_WIDTH / 8; i = i + 1) begin : gen_compare
     assign data_mask[i*8+:8] = wb_sel_o[i] ? 8'hFF : 8'h00;
-    assign read_compare[i] = ~wb_sel_o[i] ? 1'b1 : (wb_dat_i[i*8+:8] == data_expected[i*8+:8]);
+    assign read_compare[i]   = ~wb_sel_o[i] ? 1'b1 : (wb_dat_i[i*8+:8] == data_expected[i*8+:8]);
   end
 
   // wishbone bus
   assign wb_cyc_o = wb_stb_o;
 
   always_comb begin
-    wb_we_o = (state == ST_WRITE_ACTION);
+    wb_we_o  = (state == ST_WRITE_ACTION);
     wb_stb_o = (state == ST_READ_ACTION || state == ST_WRITE_ACTION);
   end
 
