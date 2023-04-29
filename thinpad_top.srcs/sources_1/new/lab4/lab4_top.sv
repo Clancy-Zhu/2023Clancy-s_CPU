@@ -108,8 +108,8 @@ module lab4_top (
   logic sys_clk;
   logic sys_rst;
 
-  assign sys_clk = clk_10M;
-  assign sys_rst = reset_of_clk10M;
+  assign sys_clk  = clk_10M;
+  assign sys_rst  = reset_of_clk10M;
 
   // 本实验不使用 CPLD 串口，禁用防止总线冲突
   assign uart_rdn = 1'b1;
@@ -255,18 +255,18 @@ module lab4_top (
       .SRAM_ADDR_WIDTH(20),
       .SRAM_DATA_WIDTH(32)
   ) sram_controller_base (
-      .clk_i    (sys_clk),
-      .rst_i    (sys_rst),
+      .clk_i(sys_clk),
+      .rst_i(sys_rst),
 
       // Wishbone slave (to MUX)
-      .wb_cyc_i (wbs0_cyc_o),
-      .wb_stb_i (wbs0_stb_o),
-      .wb_ack_o (wbs0_ack_i),
-      .wb_adr_i (wbs0_adr_o),
-      .wb_dat_i (wbs0_dat_o),
-      .wb_dat_o (wbs0_dat_i),
-      .wb_sel_i (wbs0_sel_o),
-      .wb_we_i  (wbs0_we_o),
+      .wb_cyc_i(wbs0_cyc_o),
+      .wb_stb_i(wbs0_stb_o),
+      .wb_ack_o(wbs0_ack_i),
+      .wb_adr_i(wbs0_adr_o),
+      .wb_dat_i(wbs0_dat_o),
+      .wb_dat_o(wbs0_dat_i),
+      .wb_sel_i(wbs0_sel_o),
+      .wb_we_i (wbs0_we_o),
 
       // To SRAM chip
       .sram_addr(base_ram_addr),
@@ -281,18 +281,18 @@ module lab4_top (
       .SRAM_ADDR_WIDTH(20),
       .SRAM_DATA_WIDTH(32)
   ) sram_controller_ext (
-      .clk_i    (sys_clk),
-      .rst_i    (sys_rst),
+      .clk_i(sys_clk),
+      .rst_i(sys_rst),
 
       // Wishbone slave (to MUX)
-      .wb_cyc_i (wbs1_cyc_o),
-      .wb_stb_i (wbs1_stb_o),
-      .wb_ack_o (wbs1_ack_i),
-      .wb_adr_i (wbs1_adr_o),
-      .wb_dat_i (wbs1_dat_o),
-      .wb_dat_o (wbs1_dat_i),
-      .wb_sel_i (wbs1_sel_o),
-      .wb_we_i  (wbs1_we_o),
+      .wb_cyc_i(wbs1_cyc_o),
+      .wb_stb_i(wbs1_stb_o),
+      .wb_ack_o(wbs1_ack_i),
+      .wb_adr_i(wbs1_adr_o),
+      .wb_dat_i(wbs1_dat_o),
+      .wb_dat_o(wbs1_dat_i),
+      .wb_sel_i(wbs1_sel_o),
+      .wb_we_i (wbs1_we_o),
 
       // To SRAM chip
       .sram_addr(ext_ram_addr),
