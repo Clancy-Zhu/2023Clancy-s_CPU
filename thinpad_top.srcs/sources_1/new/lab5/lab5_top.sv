@@ -1,58 +1,58 @@
 `default_nettype none
 
 module lab5_top (
-    input wire clk_50M,     // 50MHz 时钟输入
-    input wire clk_11M0592, // 11.0592MHz 时钟输入（备用，可不用）
+    input wire clk_50M,     // 50MHz 鏃堕挓杈撳叆
+    input wire clk_11M0592, // 11.0592MHz 鏃堕挓杈撳叆锛堝鐢紝鍙笉鐢級
 
-    input wire push_btn,  // BTN5 按钮开关，带消抖电路，按下时为 1
-    input wire reset_btn, // BTN6 复位按钮，带消抖电路，按下时为 1
+    input wire push_btn,  // BTN5 鎸夐挳寮?鍏筹紝甯︽秷鎶栫數璺紝鎸変笅鏃朵负 1
+    input wire reset_btn, // BTN6 澶嶄綅鎸夐挳锛屽甫娑堟姈鐢佃矾锛屾寜涓嬫椂涓? 1
 
-    input  wire [ 3:0] touch_btn,  // BTN1~BTN4，按钮开关，按下时为 1
-    input  wire [31:0] dip_sw,     // 32 位拨码开关，拨到“ON”时为 1
-    output wire [15:0] leds,       // 16 位 LED，输出时 1 点亮
-    output wire [ 7:0] dpy0,       // 数码管低位信号，包括小数点，输出 1 点亮
-    output wire [ 7:0] dpy1,       // 数码管高位信号，包括小数点，输出 1 点亮
+    input  wire [ 3:0] touch_btn,  // BTN1~BTN4锛屾寜閽紑鍏筹紝鎸変笅鏃朵负 1
+    input  wire [31:0] dip_sw,     // 32 浣嶆嫧鐮佸紑鍏筹紝鎷ㄥ埌鈥淥N鈥濇椂涓? 1
+    output wire [15:0] leds,       // 16 浣? LED锛岃緭鍑烘椂 1 鐐逛寒
+    output wire [ 7:0] dpy0,       // 鏁扮爜绠′綆浣嶄俊鍙凤紝鍖呮嫭灏忔暟鐐癸紝杈撳嚭 1 鐐逛寒
+    output wire [ 7:0] dpy1,       // 鏁扮爜绠￠珮浣嶄俊鍙凤紝鍖呮嫭灏忔暟鐐癸紝杈撳嚭 1 鐐逛寒
 
-    // CPLD 串口控制器信号
-    output wire uart_rdn,        // 读串口信号，低有效
-    output wire uart_wrn,        // 写串口信号，低有效
-    input  wire uart_dataready,  // 串口数据准备好
-    input  wire uart_tbre,       // 发送数据标志
-    input  wire uart_tsre,       // 数据发送完毕标志
+    // CPLD 涓插彛鎺у埗鍣ㄤ俊鍙?
+    output wire uart_rdn,        // 璇讳覆鍙ｄ俊鍙凤紝浣庢湁鏁?
+    output wire uart_wrn,        // 鍐欎覆鍙ｄ俊鍙凤紝浣庢湁鏁?
+    input  wire uart_dataready,  // 涓插彛鏁版嵁鍑嗗濂?
+    input  wire uart_tbre,       // 鍙戦?佹暟鎹爣蹇?
+    input  wire uart_tsre,       // 鏁版嵁鍙戦?佸畬姣曟爣蹇?
 
-    // BaseRAM 信号
-    inout wire [31:0] base_ram_data,  // BaseRAM 数据，低 8 位与 CPLD 串口控制器共享
-    output wire [19:0] base_ram_addr,  // BaseRAM 地址
-    output wire [3:0] base_ram_be_n,  // BaseRAM 字节使能，低有效。如果不使用字节使能，请保持为 0
-    output wire base_ram_ce_n,  // BaseRAM 片选，低有效
-    output wire base_ram_oe_n,  // BaseRAM 读使能，低有效
-    output wire base_ram_we_n,  // BaseRAM 写使能，低有效
+    // BaseRAM 淇″彿
+    inout wire [31:0] base_ram_data,  // BaseRAM 鏁版嵁锛屼綆 8 浣嶄笌 CPLD 涓插彛鎺у埗鍣ㄥ叡浜?
+    output wire [19:0] base_ram_addr,  // BaseRAM 鍦板潃
+    output wire [3:0] base_ram_be_n,  // BaseRAM 瀛楄妭浣胯兘锛屼綆鏈夋晥銆傚鏋滀笉浣跨敤瀛楄妭浣胯兘锛岃淇濇寔涓? 0
+    output wire base_ram_ce_n,  // BaseRAM 鐗囬?夛紝浣庢湁鏁?
+    output wire base_ram_oe_n,  // BaseRAM 璇讳娇鑳斤紝浣庢湁鏁?
+    output wire base_ram_we_n,  // BaseRAM 鍐欎娇鑳斤紝浣庢湁鏁?
 
-    // ExtRAM 信号
-    inout wire [31:0] ext_ram_data,  // ExtRAM 数据
-    output wire [19:0] ext_ram_addr,  // ExtRAM 地址
-    output wire [3:0] ext_ram_be_n,  // ExtRAM 字节使能，低有效。如果不使用字节使能，请保持为 0
-    output wire ext_ram_ce_n,  // ExtRAM 片选，低有效
-    output wire ext_ram_oe_n,  // ExtRAM 读使能，低有效
-    output wire ext_ram_we_n,  // ExtRAM 写使能，低有效
+    // ExtRAM 淇″彿
+    inout wire [31:0] ext_ram_data,  // ExtRAM 鏁版嵁
+    output wire [19:0] ext_ram_addr,  // ExtRAM 鍦板潃
+    output wire [3:0] ext_ram_be_n,  // ExtRAM 瀛楄妭浣胯兘锛屼綆鏈夋晥銆傚鏋滀笉浣跨敤瀛楄妭浣胯兘锛岃淇濇寔涓? 0
+    output wire ext_ram_ce_n,  // ExtRAM 鐗囬?夛紝浣庢湁鏁?
+    output wire ext_ram_oe_n,  // ExtRAM 璇讳娇鑳斤紝浣庢湁鏁?
+    output wire ext_ram_we_n,  // ExtRAM 鍐欎娇鑳斤紝浣庢湁鏁?
 
-    // 直连串口信号
-    output wire txd,  // 直连串口发送端
-    input  wire rxd,  // 直连串口接收端
+    // 鐩磋繛涓插彛淇″彿
+    output wire txd,  // 鐩磋繛涓插彛鍙戦?佺
+    input  wire rxd,  // 鐩磋繛涓插彛鎺ユ敹绔?
 
-    // Flash 存储器信号，参考 JS28F640 芯片手册
-    output wire [22:0] flash_a,  // Flash 地址，a0 仅在 8bit 模式有效，16bit 模式无意义
-    inout wire [15:0] flash_d,  // Flash 数据
-    output wire flash_rp_n,  // Flash 复位信号，低有效
-    output wire flash_vpen,  // Flash 写保护信号，低电平时不能擦除、烧写
-    output wire flash_ce_n,  // Flash 片选信号，低有效
-    output wire flash_oe_n,  // Flash 读使能信号，低有效
-    output wire flash_we_n,  // Flash 写使能信号，低有效
-    output wire flash_byte_n, // Flash 8bit 模式选择，低有效。在使用 flash 的 16 位模式时请设为 1
+    // Flash 瀛樺偍鍣ㄤ俊鍙凤紝鍙傝?? JS28F640 鑺墖鎵嬪唽
+    output wire [22:0] flash_a,  // Flash 鍦板潃锛宎0 浠呭湪 8bit 妯″紡鏈夋晥锛?16bit 妯″紡鏃犳剰涔?
+    inout wire [15:0] flash_d,  // Flash 鏁版嵁
+    output wire flash_rp_n,  // Flash 澶嶄綅淇″彿锛屼綆鏈夋晥
+    output wire flash_vpen,  // Flash 鍐欎繚鎶や俊鍙凤紝浣庣數骞虫椂涓嶈兘鎿﹂櫎銆佺儳鍐?
+    output wire flash_ce_n,  // Flash 鐗囬?変俊鍙凤紝浣庢湁鏁?
+    output wire flash_oe_n,  // Flash 璇讳娇鑳戒俊鍙凤紝浣庢湁鏁?
+    output wire flash_we_n,  // Flash 鍐欎娇鑳戒俊鍙凤紝浣庢湁鏁?
+    output wire flash_byte_n, // Flash 8bit 妯″紡閫夋嫨锛屼綆鏈夋晥銆傚湪浣跨敤 flash 鐨? 16 浣嶆ā寮忔椂璇疯涓? 1
 
-    // USB 控制器信号，参考 SL811 芯片手册
+    // USB 鎺у埗鍣ㄤ俊鍙凤紝鍙傝?? SL811 鑺墖鎵嬪唽
     output wire sl811_a0,
-    // inout  wire [7:0] sl811_d,     // USB 数据线与网络控制器的 dm9k_sd[7:0] 共享
+    // inout  wire [7:0] sl811_d,     // USB 鏁版嵁绾夸笌缃戠粶鎺у埗鍣ㄧ殑 dm9k_sd[7:0] 鍏变韩
     output wire sl811_wr_n,
     output wire sl811_rd_n,
     output wire sl811_cs_n,
@@ -61,7 +61,7 @@ module lab5_top (
     input  wire sl811_intrq,
     input  wire sl811_drq_n,
 
-    // 网络控制器信号，参考 DM9000A 芯片手册
+    // 缃戠粶鎺у埗鍣ㄤ俊鍙凤紝鍙傝?? DM9000A 鑺墖鎵嬪唽
     output wire dm9k_cmd,
     inout wire [15:0] dm9k_sd,
     output wire dm9k_iow_n,
@@ -70,34 +70,34 @@ module lab5_top (
     output wire dm9k_pwrst_n,
     input wire dm9k_int,
 
-    // 图像输出信号
-    output wire [2:0] video_red,    // 红色像素，3 位
-    output wire [2:0] video_green,  // 绿色像素，3 位
-    output wire [1:0] video_blue,   // 蓝色像素，2 位
-    output wire       video_hsync,  // 行同步（水平同步）信号
-    output wire       video_vsync,  // 场同步（垂直同步）信号
-    output wire       video_clk,    // 像素时钟输出
-    output wire       video_de      // 行数据有效信号，用于区分消隐区
+    // 鍥惧儚杈撳嚭淇″彿
+    output wire [2:0] video_red,    // 绾㈣壊鍍忕礌锛?3 浣?
+    output wire [2:0] video_green,  // 缁胯壊鍍忕礌锛?3 浣?
+    output wire [1:0] video_blue,   // 钃濊壊鍍忕礌锛?2 浣?
+    output wire       video_hsync,  // 琛屽悓姝ワ紙姘村钩鍚屾锛変俊鍙?
+    output wire       video_vsync,  // 鍦哄悓姝ワ紙鍨傜洿鍚屾锛変俊鍙?
+    output wire       video_clk,    // 鍍忕礌鏃堕挓杈撳嚭
+    output wire       video_de      // 琛屾暟鎹湁鏁堜俊鍙凤紝鐢ㄤ簬鍖哄垎娑堥殣鍖?
 );
 
   /* =========== Demo code begin =========== */
 
-  // PLL 分频示例
+  // PLL 鍒嗛绀轰緥
   logic locked, clk_10M, clk_20M;
   pll_example clock_gen (
       // Clock in ports
-      .clk_in1(clk_50M),  // 外部时钟输入
+      .clk_in1(clk_50M),  // 澶栭儴鏃堕挓杈撳叆
       // Clock out ports
-      .clk_out1(clk_10M),  // 时钟输出 1，频率在 IP 配置界面中设置
-      .clk_out2(clk_20M),  // 时钟输出 2，频率在 IP 配置界面中设置
+      .clk_out1(clk_10M),  // 鏃堕挓杈撳嚭 1锛岄鐜囧湪 IP 閰嶇疆鐣岄潰涓缃?
+      .clk_out2(clk_20M),  // 鏃堕挓杈撳嚭 2锛岄鐜囧湪 IP 閰嶇疆鐣岄潰涓缃?
       // Status and control signals
-      .reset(reset_btn),  // PLL 复位输入
-      .locked(locked)  // PLL 锁定指示输出，"1"表示时钟稳定，
-                       // 后级电路复位信号应当由它生成（见下）
+      .reset(reset_btn),  // PLL 澶嶄綅杈撳叆
+      .locked(locked)  // PLL 閿佸畾鎸囩ず杈撳嚭锛?"1"琛ㄧず鏃堕挓绋冲畾锛?
+                       // 鍚庣骇鐢佃矾澶嶄綅淇″彿搴斿綋鐢卞畠鐢熸垚锛堣涓嬶級
   );
 
   logic reset_of_clk10M;
-  // 异步复位，同步释放，将 locked 信号转为后级电路的复位 reset_of_clk10M
+  // 寮傛澶嶄綅锛屽悓姝ラ噴鏀撅紝灏? locked 淇″彿杞负鍚庣骇鐢佃矾鐨勫浣? reset_of_clk10M
   always_ff @(posedge clk_10M or negedge locked) begin
     if (~locked) reset_of_clk10M <= 1'b1;
     else reset_of_clk10M <= 1'b0;
@@ -108,12 +108,12 @@ module lab5_top (
   logic sys_clk;
   logic sys_rst;
 
-  assign sys_clk = clk_10M;
-  assign sys_rst = reset_of_clk10M;
+  assign sys_clk   = clk_10M;
+  assign sys_rst   = reset_of_clk10M;
 
-  // 本实验不使用 CPLD 串口，禁用防止总线冲突
-  assign uart_rdn = 1'b1;
-  assign uart_wrn = 1'b1;
+  // 鏈疄楠屼笉浣跨敤 CPLD 涓插彛锛岀鐢ㄩ槻姝㈡?荤嚎鍐茬獊
+  assign uart_rdn  = 1'b1;
+  assign uart_wrn  = 1'b1;
 
   /* =========== Lab5 Master begin =========== */
   // Lab5 Master => Wishbone MUX (Slave)
@@ -133,7 +133,8 @@ module lab5_top (
       .clk_i(sys_clk),
       .rst_i(sys_rst),
 
-      // TODO: 添加需要的控制信号，例如按键开关？
+      // TODO: 娣诲姞闇?瑕佺殑鎺у埗淇″彿锛屼緥濡傛寜閿紑鍏筹紵
+      .base_addr_i(dip_sw),  // 鍩哄湴鍧?锛岀敤浜庤绠? Wishbone 鍦板潃
 
       // wishbone master
       .wb_cyc_o(wbm_cyc_o),
@@ -297,8 +298,8 @@ module lab5_top (
       .sram_be_n(ext_ram_be_n)
   );
 
-  // 串口控制器模块
-  // NOTE: 如果修改系统时钟频率，也需要修改此处的时钟频率参数
+  // 涓插彛鎺у埗鍣ㄦā鍧?
+  // NOTE: 濡傛灉淇敼绯荤粺鏃堕挓棰戠巼锛屼篃闇?瑕佷慨鏀规澶勭殑鏃堕挓棰戠巼鍙傛暟
   uart_controller #(
       .CLK_FREQ(10_000_000),
       .BAUD    (115200)

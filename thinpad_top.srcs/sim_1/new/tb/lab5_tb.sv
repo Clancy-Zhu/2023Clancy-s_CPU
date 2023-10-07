@@ -3,15 +3,15 @@ module lab5_tb;
 
   wire clk_50M, clk_11M0592;
 
-  reg push_btn;   // BTN5 按钮开关，带消抖电路，按下时为 1
+  reg push_btn;  // BTN5 按钮开关，带消抖电路，按下时为 1
   reg reset_btn;  // BTN6 复位按钮，带消抖电路，按下时为 1
 
-  reg [3:0] touch_btn; // BTN1~BTN4，按钮开关，按下时为 1
-  reg [31:0] dip_sw;   // 32 位拨码开关，拨到“ON”时为 1
+  reg [3:0] touch_btn;  // BTN1~BTN4，按钮开关，按下时为 1
+  reg [31:0] dip_sw;  // 32 位拨码开关，拨到“ON”时为 1
 
   wire [15:0] leds;  // 16 位 LED，输出时 1 点亮
-  wire [7:0] dpy0;   // 数码管低位信号，包括小数点，输出 1 点亮
-  wire [7:0] dpy1;   // 数码管高位信号，包括小数点，输出 1 点亮
+  wire [7:0] dpy0;  // 数码管低位信号，包括小数点，输出 1 点亮
+  wire [7:0] dpy1;  // 数码管高位信号，包括小数点，输出 1 点亮
 
   wire [31:0] base_ram_data;  // BaseRAM 数据，低 8 位与 CPLD 串口控制器共享
   wire [19:0] base_ram_addr;  // BaseRAM 地址
@@ -62,9 +62,15 @@ module lab5_tb;
     end
 
     // 模拟 PC 通过串口，向 FPGA 发送字符
-    uart.pc_send_byte(8'h32); // ASCII '2'
-    #10000;
-    uart.pc_send_byte(8'h33); // ASCII '3'
+    uart.pc_send_byte(8'h31);  // ASCII '1'
+    #1000;
+    uart.pc_send_byte(8'h32);  // ASCII '2'
+    #1000;
+    uart.pc_send_byte(8'h33);  // ASCII '3'
+    #1000;
+    uart.pc_send_byte(8'h34);  // ASCII '4'
+    #1000;
+    uart.pc_send_byte(8'h35);  // ASCII '5'
 
     // PC 接收到数据后，会在仿真窗口中打印出数据
 
@@ -130,8 +136,8 @@ module lab5_tb;
   );
   // 直连串口仿真模型
   uart_model uart (
-    .rxd (txd),
-    .txd (rxd)
+      .rxd(txd),
+      .txd(rxd)
   );
   // BaseRAM 仿真模型
   sram_model base1 (

@@ -57,6 +57,11 @@ module sram_controller #(
   always_ff @(posedge clk_i or posedge rst_i) begin
     if (rst_i) begin
       sram_addr_reg <= 0;
+      sram_ce_n_reg <= 1'b1;
+      sram_oe_n_reg <= 1'b1;
+      sram_we_n_reg <= 1'b1;
+      sram_data_t_comb <= 1'b1;
+      wb_ack_o <= 1'b0;
       state <= IDLE;
     end else begin
       case (state)
@@ -81,7 +86,10 @@ module sram_controller #(
           end
         end
         READ: begin
-          wb_dat_o <= sram_data_i_comb;
+          wb_dat_o[7:0] <= (sram_be_n_reg[0] ? 0 : sram_data_i_comb[7:0]);
+          wb_dat_o[15:8] <= (sram_be_n_reg[1] ? 0 : sram_data_i_comb[15:8]);
+          wb_dat_o[23:16] <= (sram_be_n_reg[2] ? 0 : sram_data_i_comb[23:16]);
+          wb_dat_o[31:24] <= (sram_be_n_reg[3] ? 0 : sram_data_i_comb[31:24]);
           state <= READ2;
         end
         READ2: begin
@@ -91,7 +99,7 @@ module sram_controller #(
           state <= DONE;
         end
         WRITE: begin  //读取32bit的数据
-          sram_data_reg <= sram_data_i_comb;  //通过o_comb输出
+          sram_data_reg <= sram_data_i_comb;
           state <= WRITE2;
         end
         WRITE2: begin  //开始写

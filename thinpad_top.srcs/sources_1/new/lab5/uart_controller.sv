@@ -20,7 +20,7 @@ module uart_controller #(
     input wire wb_we_i,
 
     // uart interface
-    output reg uart_txd_o,
+    output reg  uart_txd_o,
     input  wire uart_rxd_i
 );
 
@@ -64,25 +64,24 @@ module uart_controller #(
 
   /*-- wishbone fsm --*/
   always_ff @(posedge clk_i) begin
-    if (rst_i)
-      wb_ack_o <= 0;
+    if (rst_i) wb_ack_o <= 0;
     else
-      // every request get ACK-ed immediately
-      if (wb_ack_o) begin
-        wb_ack_o <= 0;
-      end else begin
-        wb_ack_o <= wb_stb_i;
-      end
+    // every request get ACK-ed immediately
+    if (wb_ack_o) begin
+      wb_ack_o <= 0;
+    end else begin
+      wb_ack_o <= wb_stb_i;
+    end
   end
 
   // write logic
   always_ff @(posedge clk_i) begin
     if (rst_i) begin
       txd_start <= 0;
-    end else if(wb_stb_i && wb_we_i) begin
+    end else if (wb_stb_i && wb_we_i) begin
       case (wb_adr_i[7:0])
         REG_DATA: begin
-          if(wb_sel_i[0]) begin
+          if (wb_sel_i[0]) begin
             txd_data  <= wb_dat_i[7:0];
             txd_start <= 1;
           end
@@ -97,9 +96,9 @@ module uart_controller #(
 
   // read logic
   always_ff @(posedge clk_i) begin
-    if(rst_i) begin
+    if (rst_i) begin
       rxd_clear <= 1;  // clear rxd to initialize dataready
-    end else if(wb_stb_i && !wb_we_i) begin
+    end else if (wb_stb_i && !wb_we_i) begin
       case (wb_adr_i[7:0])
         REG_DATA: begin
           if (wb_sel_i[0]) wb_dat_o[7:0] <= rxd_data;
