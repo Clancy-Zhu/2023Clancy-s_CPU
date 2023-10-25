@@ -5,7 +5,7 @@ module lab5_master #(
     input wire clk_i,
     input wire rst_i,
 
-    // TODO: 添加�??要的控制信号，例如按键开关？
+    // TODO: 添加�??要的控制信号，例如按键开关？
     input wire [ADDR_WIDTH-1:0] base_addr_i,
 
     // wishbone master
@@ -19,7 +19,7 @@ module lab5_master #(
     output reg wb_we_o
 );
 
-  // TODO: 实现实验 5 的内�??+串口 Master
+  // TODO: 实现实验 5 的内�??+串口 Master
   typedef enum logic [3:0] {
     IDLE,
     READ_WAIT_ACTION,
@@ -76,7 +76,7 @@ module lab5_master #(
         end
         READ_WAIT_CHECK: begin
           // 0x10000005[0] == 1
-          if (uart_state) begin  // 串口有数�??
+          if (uart_state) begin  // 串口有数�??
             wb_stb_o <= 1;
             wb_cyc_o <= 1;
             wb_adr_o <= uart_addr;  // 读取串口数据

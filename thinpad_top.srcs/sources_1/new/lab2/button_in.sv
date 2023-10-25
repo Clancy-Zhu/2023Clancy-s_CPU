@@ -1,5 +1,4 @@
-`timescale 1ns / 1ps
-`default_nettype none
+`timescale 1ns / 1ps `default_nettype none
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -21,30 +20,25 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module button_in(
-  input wire clk,
-  input wire reset,
-  input wire btn,
-
-  output wire trigger
+module button_in (
+    input  wire clk,
+    input  wire reset,
+    input  wire btn,
+    output wire trigger
 );
 
-     logic last_btn, last_last_btn;
-     logic trig;
-     always_ff @ (posedge clk or posedge reset) begin
-        if(reset) begin
-            last_btn <= 0;
-            trig <= 0;
-        end
-        else begin
-        
-        if (btn && !last_btn)
-                trig <= 1'b1;
-            else trig <= 1'b0;
-            
-        last_btn <= btn;
-        end
-     end
-    
-     assign trigger = trig;
+  logic last_btn, last_last_btn;
+  logic trig;
+  always_ff @(posedge clk or posedge reset) begin
+    if (reset) begin
+      last_btn <= 0;
+      trig <= 0;
+    end else begin
+      if (btn && !last_btn) trig <= 1'b1;
+      else trig <= 1'b0;
+      last_btn <= btn;
+    end
+  end
+
+  assign trigger = trig;
 endmodule
