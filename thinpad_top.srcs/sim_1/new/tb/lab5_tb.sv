@@ -3,47 +3,47 @@ module lab5_tb;
 
   wire clk_50M, clk_11M0592;
 
-  reg push_btn;  // BTN5 按钮�?关，带消抖电路，按下时为 1
-  reg reset_btn;  // BTN6 复位按钮，带消抖电路，按下时�? 1
+  reg push_btn;  // BTN5 �撘?�喉�撣行��頝荔����嗡蛹 1
+  reg reset_btn;  // BTN6 憭��嚗蒂瘨��菔楝嚗�銝銝? 1
 
-  reg [3:0] touch_btn;  // BTN1~BTN4，按钮开关，按下时为 1
-  reg [31:0] dip_sw;  // 32 位拨码开关，拨到“ON”时�? 1
+  reg [3:0] touch_btn;  // BTN1~BTN4嚗��桀��喉����嗡蛹 1
+  reg [31:0] dip_sw;  // 32 雿���喉��典�N�銝? 1
 
-  wire [15:0] leds;  // 16 �? LED，输出时 1 点亮
-  wire [7:0] dpy0;  // 数码管低位信号，包括小数点，输出 1 点亮
-  wire [7:0] dpy1;  // 数码管高位信号，包括小数点，输出 1 点亮
+  wire [15:0] leds;  // 16 雿? LED嚗��箸 1 �嫣漁
+  wire [7:0] dpy0;  // �啁�蝞∩�雿縑�瘀��撠�對�颲 1 �嫣漁
+  wire [7:0] dpy1;  // �啁�蝞⊿�雿縑�瘀��撠�對�颲 1 �嫣漁
 
-  wire [31:0] base_ram_data;  // BaseRAM 数据，低 8 位与 CPLD 串口控制器共�?
-  wire [19:0] base_ram_addr;  // BaseRAM 地址
-  wire[3:0] base_ram_be_n;    // BaseRAM 字节使能，低有效。如果不使用字节使能，请保持�? 0
-  wire base_ram_ce_n;  // BaseRAM 片�?�，低有�?
-  wire base_ram_oe_n;  // BaseRAM 读使能，低有�?
-  wire base_ram_we_n;  // BaseRAM 写使能，低有�?
+  wire [31:0] base_ram_data;  // BaseRAM �唳嚗� 8 雿� CPLD 銝脣�批�典鈭?
+  wire [19:0] base_ram_addr;  // BaseRAM �啣�
+  wire[3:0] base_ram_be_n;    // BaseRAM 摮�雿輯嚗�������雿輻摮�雿輯嚗窈靽�銝? 0
+  wire base_ram_ce_n;  // BaseRAM �?�雿��?
+  wire base_ram_oe_n;  // BaseRAM 霂颱蝙�踝�雿��?
+  wire base_ram_we_n;  // BaseRAM �蝙�踝�雿��?
 
-  wire [31:0] ext_ram_data;  // ExtRAM 数据
-  wire [19:0] ext_ram_addr;  // ExtRAM 地址
-  wire[3:0] ext_ram_be_n;    // ExtRAM 字节使能，低有效。如果不使用字节使能，请保持�? 0
-  wire ext_ram_ce_n;  // ExtRAM 片�?�，低有�?
-  wire ext_ram_oe_n;  // ExtRAM 读使能，低有�?
-  wire ext_ram_we_n;  // ExtRAM 写使能，低有�?
+  wire [31:0] ext_ram_data;  // ExtRAM �唳
+  wire [19:0] ext_ram_addr;  // ExtRAM �啣�
+  wire[3:0] ext_ram_be_n;    // ExtRAM 摮�雿輯嚗�������雿輻摮�雿輯嚗窈靽�銝? 0
+  wire ext_ram_ce_n;  // ExtRAM �?�雿��?
+  wire ext_ram_oe_n;  // ExtRAM 霂颱蝙�踝�雿��?
+  wire ext_ram_we_n;  // ExtRAM �蝙�踝�雿��?
 
-  wire txd;  // 直连串口发�?�端
-  wire rxd;  // 直连串口接收�?
+  wire txd;  // �渲�銝脣�?垢
+  wire rxd;  // �渲�銝脣�交蝡?
 
-  // CPLD 串口
-  wire uart_rdn;  // 读串口信号，低有�?
-  wire uart_wrn;  // 写串口信号，低有�?
-  wire uart_dataready;  // 串口数据准备�?
-  wire uart_tbre;  // 发�?�数据标�?
-  wire uart_tsre;  // 数据发�?�完毕标�?
+  // CPLD 銝脣
+  wire uart_rdn;  // 霂颱葡��縑�瘀�雿��?
+  wire uart_wrn;  // �葡��縑�瘀�雿��?
+  wire uart_dataready;  // 銝脣�唳��憟?
+  wire uart_tbre;  // �?�格�敹?
+  wire uart_tsre;  // �唳�?�瘥�敹?
 
-  // Windows �?要注意路径分隔符的转义，例如 "D:\\foo\\bar.bin"
-  parameter BASE_RAM_INIT_FILE = "/tmp/main.bin"; // BaseRAM 初始化文件，请修改为实际的绝对路�?
-  parameter EXT_RAM_INIT_FILE = "/tmp/eram.bin";  // ExtRAM 初始化文件，请修改为实际的绝对路�?
+  // Windows �?閬釣�楝敺��泵�蓮銋�靘� "D:\\foo\\bar.bin"
+  parameter BASE_RAM_INIT_FILE = "/tmp/main.bin"; // BaseRAM ����隞塚�霂瑚耨�嫣蛹摰���撖寡楝敺?
+  parameter EXT_RAM_INIT_FILE = "/tmp/eram.bin";  // ExtRAM ����隞塚�霂瑚耨�嫣蛹摰���撖寡楝敺?
 
   initial begin
-    // 在这里可以自定义测试输入序列，例如：
-    dip_sw = 32'h2;
+    // �刻��隞亥摰�瘚�颲摨�嚗�憒�
+    dip_sw = 32'h80000000;
     touch_btn = 0;
     reset_btn = 0;
     push_btn = 0;
@@ -53,15 +53,15 @@ module lab5_tb;
     #100;
     reset_btn = 0;
 
-    // TODO: 根据实验的操作要求，自定义下面的输入序列
+    // TODO: �寞摰���雿�瘙��芸�銋��Ｙ�颲摨�
     for (integer i = 0; i < 20; i = i + 1) begin
-      #100;  // 等待 100ns
-      push_btn = 1;  // 按下 push_btn 按钮
-      #100;  // 等待 100ns
-      push_btn = 0;  // 松开 push_btn 按钮
+      #100;  // 蝑� 100ns
+      push_btn = 1;  // �� push_btn �
+      #100;  // 蝑� 100ns
+      push_btn = 0;  // �曉� push_btn �
     end
 
-    // 模拟 PC 通过串口，向 FPGA 发�?�字�?
+    // 璅⊥� PC ��銝脣嚗� FPGA �?�蝚?
     uart.pc_send_byte(8'h31);  // ASCII '1'
     #1000;
     uart.pc_send_byte(8'h32);  // ASCII '2'
@@ -72,13 +72,13 @@ module lab5_tb;
     #1000;
     uart.pc_send_byte(8'h35);  // ASCII '5'
 
-    // PC 接收到数据后，会在仿真窗口中打印出数�?
+    // PC �交�唳�桀�嚗��其遛����葉��箸�?
 
-    // 等待�?段时间，结束仿真
+    // 蝑�銝?畾菜�湛�蝏�隞輻�
     #100000 $finish;
   end
 
-  // 待测试用户设�?
+  // 敺�霂�瑁挽霈?
   lab5_top dut (
       .clk_50M(clk_50M),
       .clk_11M0592(clk_11M0592),
@@ -118,13 +118,13 @@ module lab5_tb;
       .flash_we_n()
   );
 
-  // 时钟�?
+  // �園�皞?
   clock osc (
       .clk_11M0592(clk_11M0592),
       .clk_50M    (clk_50M)
   );
 
-  // CPLD 串口仿真模型
+  // CPLD 銝脣隞輻�璅∪�
   cpld_model cpld (
       .clk_uart(clk_11M0592),
       .uart_rdn(uart_rdn),
@@ -134,12 +134,12 @@ module lab5_tb;
       .uart_tsre(uart_tsre),
       .data(base_ram_data[7:0])
   );
-  // 直连串口仿真模型
+  // �渲�銝脣隞輻�璅∪�
   uart_model uart (
       .rxd(txd),
       .txd(rxd)
   );
-  // BaseRAM 仿真模型
+  // BaseRAM 隞輻�璅∪�
   sram_model base1 (
       .DataIO(base_ram_data[15:0]),
       .Address(base_ram_addr[19:0]),
@@ -158,7 +158,7 @@ module lab5_tb;
       .LB_n(base_ram_be_n[2]),
       .UB_n(base_ram_be_n[3])
   );
-  // ExtRAM 仿真模型
+  // ExtRAM 隞輻�璅∪�
   sram_model ext1 (
       .DataIO(ext_ram_data[15:0]),
       .Address(ext_ram_addr[19:0]),
@@ -178,7 +178,7 @@ module lab5_tb;
       .UB_n(ext_ram_be_n[3])
   );
 
-  // 从文件加�? BaseRAM
+  // 隞�隞嗅�頧? BaseRAM
   initial begin
     reg [31:0] tmp_array[0:1048575];
     integer n_File_ID, n_Init_Size;
@@ -200,7 +200,7 @@ module lab5_tb;
     end
   end
 
-  // 从文件加�? ExtRAM
+  // 隞�隞嗅�頧? ExtRAM
   initial begin
     reg [31:0] tmp_array[0:1048575];
     integer n_File_ID, n_Init_Size;
